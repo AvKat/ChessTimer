@@ -16,16 +16,16 @@ const DEFAULT_TOP = wp(50) - 45;
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const StartButton: React.FC<StartButtonTypes> = ({ onPress }) => {
-  const { started } = useAppSelector((s) => s.gameState);
+  const { turn } = useAppSelector((s) => s.gameState);
   const top = useSharedValue(DEFAULT_TOP);
 
   useEffect(() => {
-    if (started) {
+    if (turn !== "") {
       top.value = 600;
     } else {
       top.value = DEFAULT_TOP;
     }
-  }, [started]);
+  }, [turn]);
 
   const style = useAnimatedStyle(() => ({
     top: withSpring(top.value, { stiffness: 50 }),

@@ -1,16 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, BackHandler, StyleSheet } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { TurnView } from "./TurnView";
 import Animated from "react-native-reanimated";
 import { StartButton } from "./StartButton";
 import { useAppDispatch, useAppSelector } from "./lib/hooks";
-import { SetStarted, SetTurn } from "./redux/actions";
+import { ResetGameState, SetStarted, SetTurn } from "./redux/actions";
 import { TurnTypes } from "./types";
 
 const Main = () => {
-  const { turn } = useAppSelector((s) => s.gameState);
+  const { turn, started } = useAppSelector((s) => s.gameState);
   const dispatch = useAppDispatch();
   const setTurn = (t: TurnTypes) => {
     dispatch(SetTurn(t));
@@ -20,6 +20,33 @@ const Main = () => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
   }, []);
 
+  useEffect(() => {
+    // @ts-ignore
+    if (turn.length === 1 && started) {
+      Alert.alert("Paused", "What do you want to do?", [
+        {
+          text: "Exit",
+          onPress: () => {
+            dispatch(ResetGameState());
+            BackHandler.exitApp();
+          },
+        },
+        {
+          text: "Restart",
+          onPress: () => {
+            dispatch(ResetGameState());
+          },
+        },
+        {
+          text: "Resume",
+          onPress: () => {
+            setTurn(turn === "w" ? "white" : "black");
+          },
+        },
+      ]);
+    }
+  }, [started, turn]);
+
   return (
     <Animated.View style={styles.container}>
       <StatusBar hidden />
@@ -27,7 +54,7 @@ const Main = () => {
       <TurnView turn={turn} setTurn={setTurn} />
       <StartButton
         onPress={() => {
-          dispatch(SetTurn("white"));
+          setTurn("white");
           dispatch(SetStarted(true));
         }}
       />

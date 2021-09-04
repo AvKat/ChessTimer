@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { hp } from "./lib/dimensions";
 import { Timer } from "./Timer";
-import {TurnTypes} from "./types";
+import { TurnTypes } from "./types";
 
 interface TurnViewProps {
   black?: boolean;
@@ -54,6 +54,9 @@ const TurnView: React.FC<TurnViewProps> = ({
     <>
       <AnimatedTouchable
         onPress={() => setTurn(black ? "white" : "black")}
+        onLongPress={() => {
+          setTurn(black ? "b" : "w");
+        }}
         disabled={!isMyTurn}
         style={animatedStyle}
       >

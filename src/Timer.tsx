@@ -45,6 +45,7 @@ const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
               {
                 text: "No",
                 onPress: () => {
+                  dispatch(ResetGameState());
                   BackHandler.exitApp();
                 },
               },
