@@ -59,6 +59,8 @@ const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
   useEffect(() => {
     if (started === true) {
       setTime((t) => t || iTime);
+    } else {
+      setTime(undefined);
     }
     if (isMyTurn && started) {
       fontSize.value = 150;
