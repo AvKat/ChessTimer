@@ -1,12 +1,11 @@
 import { TurnTypes } from "../../types";
 
 export enum GameStateActionTypes {
-  ToggleStartedType = "TOGGLE_STARTED",
   SetTurnType = "SET_TURN",
   ResetGameStateType = "RESET_GAME_STATE",
+  SetStartedType = "SET_STARTED",
 }
 
-type ToggleStartedObjectType = { type: GameStateActionTypes.ToggleStartedType };
 type SetTurnObjectType = {
   type: GameStateActionTypes.SetTurnType;
   payload: TurnTypes;
@@ -14,14 +13,14 @@ type SetTurnObjectType = {
 type ResetGameStateObjectType = {
   type: GameStateActionTypes.ResetGameStateType;
 };
+type SetStartedObjectType = {
+  type: GameStateActionTypes.SetStartedType;
+  payload: boolean;
+};
 export type GameStateActionObjectTypes =
-  | ToggleStartedObjectType
   | SetTurnObjectType
-  | ResetGameStateObjectType;
-
-export const ToggleStarted: () => ToggleStartedObjectType = () => ({
-  type: GameStateActionTypes.ToggleStartedType,
-});
+  | ResetGameStateObjectType
+  | SetStartedObjectType;
 
 export const SetTurn: (turn: TurnTypes) => SetTurnObjectType = (
   turn: TurnTypes
@@ -32,4 +31,9 @@ export const SetTurn: (turn: TurnTypes) => SetTurnObjectType = (
 
 export const ResetGameState: () => ResetGameStateObjectType = () => ({
   type: GameStateActionTypes.ResetGameStateType,
+});
+
+export const SetStarted: (s: boolean) => SetStartedObjectType = (s) => ({
+  type: GameStateActionTypes.SetStartedType,
+  payload: s,
 });
