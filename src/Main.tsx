@@ -16,8 +16,21 @@ const Main = () => {
     dispatch(SetTurn(t));
   };
 
+  const backHandlerWrapper = () => {
+    // @ts-ignore
+    if (turn === "white" || turn === "black") {
+      console.log(turn);
+      setTurn(turn === "white" ? "w" : "b");
+    }
+    return true;
+  };
+
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    BackHandler.addEventListener("hardwareBackPress", backHandlerWrapper);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backHandlerWrapper);
   }, []);
 
   useEffect(() => {
