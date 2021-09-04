@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity, Text } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -6,7 +6,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { wp } from "./lib/dimensions";
-import { TimerContext } from "./TimerContext";
+import { useAppSelector } from "./lib/hooks";
 
 interface StartButtonTypes {
   onPress: () => void;
@@ -16,16 +16,16 @@ const DEFAULT_TOP = wp(50) - 45;
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const StartButton: React.FC<StartButtonTypes> = ({ onPress }) => {
-  const { state } = useContext(TimerContext);
+  const { started } = useAppSelector((s) => s.gameState);
   const top = useSharedValue(DEFAULT_TOP);
 
   useEffect(() => {
-    if (state.started) {
+    if (started) {
       top.value = 600;
     } else {
       top.value = DEFAULT_TOP;
     }
-  }, [state.started]);
+  }, [started]);
 
   const style = useAnimatedStyle(() => ({
     top: withSpring(top.value, { stiffness: 50 }),

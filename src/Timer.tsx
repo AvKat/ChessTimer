@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Alert, BackHandler, TextInput } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { TimerContext } from "./TimerContext";
+import { useAppDispatch, useAppSelector } from "./lib/hooks";
+import { ResetGameState } from "./redux/actions";
 
 interface TimerProps {
   black: boolean;
@@ -16,10 +17,12 @@ const AnimatedInput = Animated.createAnimatedComponent(TextInput);
 
 const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
   const [time, setTime] = useState<number | undefined>(6);
-  const fontSize = useSharedValue(20);
   const intervalRef = useRef<number | undefined>(undefined);
-  const { state, reset } = useContext(TimerContext);
-  const { started } = state;
+
+  const fontSize = useSharedValue(20);
+
+  const { started } = useAppSelector((s) => s.gameState);
+  const dispatch = useAppDispatch();
 
   const decrementTime = () => {
     setTime((t) => {
@@ -35,7 +38,8 @@ const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
                 text: "Yes",
                 onPress: () => {
                   setTime(0);
-                  reset();
+                  //reset();
+                  dispatch(ResetGameState());
                 },
               },
               {

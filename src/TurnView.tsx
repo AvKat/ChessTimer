@@ -7,11 +7,12 @@ import Animated, {
 } from "react-native-reanimated";
 import { hp } from "./lib/dimensions";
 import { Timer } from "./Timer";
+import {TurnTypes} from "./types";
 
 interface TurnViewProps {
   black?: boolean;
   turn: string;
-  setTurn: (t: string) => void;
+  setTurn: (t: TurnTypes) => void;
 }
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);

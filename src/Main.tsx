@@ -1,17 +1,19 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect } from "react";
-import { StyleSheet, } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { TurnView } from "./TurnView";
 import Animated from "react-native-reanimated";
-import { TimerContext } from "./TimerContext";
-import {StartButton} from "./StartButton";
+import { StartButton } from "./StartButton";
+import { useAppDispatch, useAppSelector } from "./lib/hooks";
+import { SetStarted, SetTurn } from "./redux/actions";
+import { TurnTypes } from "./types";
 
 const Main = () => {
-  const { state, setState } = useContext(TimerContext);
-  const { turn, } = state;
-  const setTurn = (t: string) => {
-    setState({ turn: t });
+  const { turn } = useAppSelector((s) => s.gameState);
+  const dispatch = useAppDispatch();
+  const setTurn = (t: TurnTypes) => {
+    dispatch(SetTurn(t));
   };
 
   useEffect(() => {
@@ -23,7 +25,12 @@ const Main = () => {
       <StatusBar hidden />
       <TurnView black={true} turn={turn} setTurn={setTurn} />
       <TurnView turn={turn} setTurn={setTurn} />
-      <StartButton onPress={() => setState({started: true, turn: "white" })} />
+      <StartButton
+        onPress={() => {
+          dispatch(SetTurn("white"));
+          dispatch(SetStarted(true));
+        }}
+      />
     </Animated.View>
   );
 };
