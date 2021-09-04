@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, BackHandler, TextInput } from "react-native";
+import { Alert, BackHandler, TextInput, Text } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -13,10 +13,11 @@ interface TimerProps {
   isMyTurn: boolean;
 }
 
-const AnimatedInput = Animated.createAnimatedComponent(TextInput);
+const AnimatedText = Animated.createAnimatedComponent(Text);
 
 const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
-  const [time, setTime] = useState<number | undefined>(6);
+  const [time, setTime] = useState<number | undefined>(undefined);
+  const [iTime, setITime] = useState(600);
   const intervalRef = useRef<number | undefined>(undefined);
 
   const fontSize = useSharedValue(20);
@@ -38,7 +39,6 @@ const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
                 text: "Yes",
                 onPress: () => {
                   setTime(0);
-                  //reset();
                   dispatch(ResetGameState());
                 },
               },
@@ -57,14 +57,17 @@ const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
   };
 
   useEffect(() => {
-    if (isMyTurn) {
+    if (started === true) {
+      setTime((t) => t || iTime);
+    }
+    if (isMyTurn && started) {
       fontSize.value = 150;
       intervalRef.current = window.setInterval(decrementTime, 1000);
     } else {
       fontSize.value = 20;
       clearInterval(intervalRef.current);
     }
-  }, [isMyTurn]);
+  }, [isMyTurn, started]);
 
   const style = useAnimatedStyle(() => ({
     color: black ? "white" : "black",
@@ -72,14 +75,20 @@ const TimerComponent: React.FC<TimerProps> = ({ black, isMyTurn }) => {
   }));
 
   return (
-    <AnimatedInput
-      style={style}
-      editable={!started}
-      keyboardType={"numeric"}
-      onChangeText={(t) => setTime(Number(t))}
-    >
-      {time || 0}
-    </AnimatedInput>
+    <>
+      {started ? (
+        <AnimatedText {...{ style }}>{time}</AnimatedText>
+      ) : (
+        <TextInput
+          style={{ color: black ? "white" : "black", fontSize: 35 }}
+          editable={!started}
+          keyboardType={"numeric"}
+          onChangeText={(t) => setITime(Number(t))}
+        >
+          {iTime}
+        </TextInput>
+      )}
+    </>
   );
 };
 
